@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kết quả</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="max-w-2xl mx-auto p-6">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold">Hoàn tất</h1>
+      <p class="text-gray-600">Các video đã tạo</p>
+    </div>
+    <div class="bg-white shadow rounded p-6">
+      <ul class="space-y-2">
+        {% for name in files %}
+          <li class="flex items-center justify-between border rounded px-3 py-2">
+            <span class="text-gray-800">{{ name }}</span>
+            <a href="{{ url_for('download', name=name) }}" class="text-blue-600 hover:underline">Tải xuống</a>
+          </li>
+        {% endfor %}
+      </ul>
+      <div class="mt-6 text-center">
+        <a href="{{ url_for('index') }}" class="text-gray-600 hover:underline">Tạo thêm</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

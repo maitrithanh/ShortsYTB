@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YT Shorts Maker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="max-w-2xl mx-auto p-6">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold">YT Shorts Maker</h1>
+      <p class="text-gray-600">Dán link YouTube, chọn khoảng cắt và xuất 9:16/16:9</p>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-4">
+          {% for msg in messages %}
+            <div class="bg-red-100 text-red-700 px-4 py-2 rounded">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('process') }}" method="post" class="bg-white shadow rounded p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">Link YouTube</label>
+        <input name="url" type="url" required placeholder="https://www.youtube.com/watch?v=..." class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Khoảng cắt</label>
+        <textarea name="segments" rows="3" placeholder="Ví dụ: 0:10,30:45 hoặc 00:00-00:10,00:30-00:45" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring"></textarea>
+        <p class="text-xs text-gray-500 mt-1">Nhập nhiều khoảng, cách nhau bằng dấu phẩy</p>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Tỷ lệ</label>
+          <select name="aspect" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring">
+            <option value="9:16" selected>9:16 (Vertical)</option>
+            <option value="16:9">16:9 (Horizontal)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Độ phân giải</label>
+          <input name="resolution" type="text" placeholder="Ví dụ: 1080x1920 hoặc 1920x1080" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">FPS</label>
+          <input name="fps" type="number" min="1" value="30" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" />
+        </div>
+      </div>
+      <div class="flex justify-end">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Tạo video</button>
+      </div>
+    </form>
+    <footer class="text-center text-xs text-gray-400 mt-6">Xuất file vào thư mục output</footer>
+  </div>
+</body>
+</html>
+
