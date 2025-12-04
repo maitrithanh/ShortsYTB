@@ -10,14 +10,30 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Ensure dependency file
+        shell: powershell
+        run: |
+          if (-Not (Test-Path requirements.txt)) {
+            Set-Content requirements.txt "flask`nyt-dlp`nmoviepy`nimageio-ffmpeg"
+            Write-Host "Created default requirements.txt"
+          } else {
+            Write-Host "Found existing requirements.txt"
+          }
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
+          cache-dependency-path: requirements.txt
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller yt-dlp moviepy imageio-ffmpeg flask
+          if not exist requirements.txt (
+            echo ERROR: requirements.txt not found
+            exit /b 1
+          )
+          type requirements.txt
+          pip install -r requirements.txt
+          pip install pyinstaller
       - name: Build CLI exe
         run: pyinstaller --onefile --name yt-shorts yt_shorts.py
       - name: Build UI exe
