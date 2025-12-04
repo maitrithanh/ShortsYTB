@@ -1,0 +1,40 @@
+name: Auto Tag
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create next tag and push
+        env:
+          GIT_AUTHOR_NAME: github-actions
+          GIT_AUTHOR_EMAIL: github-actions@github.com
+          GIT_COMMITTER_NAME: github-actions
+          GIT_COMMITTER_EMAIL: github-actions@github.com
+        run: |
+          set -e
+          git fetch --tags
+          LATEST=$(git tag --list 'v*' | sort -V | tail -n1)
+          if [ -z "$LATEST" ]; then
+            NEXT=v0.1.0
+          else
+            BASE=${LATEST#v}
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE"
+            NEXT=v${MAJOR}.${MINOR}.$((PATCH+1))
+          fi
+          echo "Next tag: $NEXT"
+          git config user.name "$GIT_AUTHOR_NAME"
+          git config user.email "$GIT_AUTHOR_EMAIL"
+          git tag -a "$NEXT" -m "Auto release $NEXT"
+          git push origin "$NEXT"
+
